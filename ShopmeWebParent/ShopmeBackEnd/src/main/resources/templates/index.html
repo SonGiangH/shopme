@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Shopme Admin</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!-- Jquery -->
+    <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/images/carsales.png}" th:style="'width:100px'"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reports}">Sale Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/articles}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/menus}">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+
+<!--                        <li class="nav-item dropdown">-->
+<!--                            <a class="nav-link dropdown-toggle" th:href="@{/# id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                Dropdown-->
+<!--                            </a>-->
+<!--                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--                                <li><a class="dropdown-item" href="#">Action</a></li>-->
+<!--                                <li><a class="dropdown-item" href="#">Another action</a></li>-->
+<!--                                <li><hr class="dropdown-divider"></li>-->
+<!--                                <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li class="nav-item">-->
+<!--                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+<!--                        </li>-->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <h1 class="text-primary" >Welcome to Admin homepage</h1>
+    </div>
+
+
+</body>
+</html>

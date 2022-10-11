@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Shopme Admin</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!-- Jquery -->
+    <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/images/carsales.png}" th:style="'width:100px'"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reports}">Sale Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/articles}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/menus}">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <h1 class="text-primary" >[[${pageTitle}]]</h1>
+        </div>
+        <!-- Form Create New Category -->
+        <form th:action="@{/categories/save}" th:object="${category}" method="post" style="width: 800px; margin:0 auto"
+              enctype="multipart/form-data"
+              onsubmit="return checkUnique(this)">
+            <!--Hidden ID of category -->
+            <input type="hidden" th:field="*{id}" />
+            <div class="border border-secondary rounded p-4">
+                <!-- Category Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-3">
+                        <label class="col-form-label">Category Name</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" th:field="*{name}" required minlength="1" maxlength="128"/>
+                    </div>
+                </div>
+                <!-- Alias -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-3">
+                        <label class="col-form-label">Alias</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" th:field="*{alias}" required minlength="1" maxlength="64"/>
+                    </div>
+                </div>
+
+                <!-- Parent Category -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-3">
+                        <label for="inputParent" class="col-form-label">Parent Category</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <select id="inputParent" th:field="*{parent}" style="width: 100%; padding: 2px">
+                            <option value="0">[ No Parent ]</option>
+                            <th:block th:each="cat : ${listCategories}">
+                                <option th:value="${cat.id}">[[${cat.name}]]</option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-3">
+                        <label for="uploadImageCategoryInput" class="col-form-label">Category Image</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="hidden" th:field="*{image}">
+                        <input type="file" id="uploadImageCategoryInput" name="categoryImage"
+                               accept="image/png, image/jpg" class="mt-2 mb-2" th:required="${category.imagePath == null}" />
+                        <div class="mt-2">
+                            <img th:src="@{${category.imagePath}}" class="img-fluid" id="thumbnail"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enabled -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-3">
+                        <label for="inputEnabled" class="col-form-label">Enabled</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="checkbox" id="inputEnabled" th:field="*{enabled}" class="m-2"/>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div style="width: 300px; margin:0 auto" class="text-center">
+                    <input type="submit" class="btn btn-primary m-3" value="Save"/>
+                    <input type="button" class="btn btn-secondary" value="Cancel" id="buttonCancel"/>
+                </div>
+            </div>
+        </form>
+
+        <!--Modal-->
+        <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#buttonCancel").on("click", function (){
+            window.location = "[[@{/categories}]]"
+        })
+
+        $("#uploadImageCategoryInput").change(function () {
+            let fileSize = this.files[0].size;
+
+            if (fileSize > 1048576) {
+                this.setCustomValidity("You must choose an image less than 1MB !");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("")
+                showImageThumbnail(this);
+            }
+        })
+    });
+
+    // Check unique of name and alias
+    function checkUnique(form) {
+        // to RestController
+        let url = "[[@{/categories/check_unique}]]";
+
+        let categoryId = $("#id").val();
+        let categoryName = $("#name").val();
+        let alias = $("#alias").val();
+
+        let params = {
+            id: categoryId ,
+            name: categoryName,
+            alias : alias
+        };
+
+        // AJAX call
+        $.post(url, params, function (response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "DuplicateName") {
+                ShowModalDialog("Warning", categoryName + " is already exist ! Please choose another name")
+            } else if (response === "DuplicateAlias") {
+                ShowModalDialog("Warning", alias + " is already exist ! Please choose another alias")
+            } else ShowModalDialog("Warning", "Unknown response from server !");
+        }).fail(function () {
+            ShowModalDialog("Error", "Unable connect to server !")
+        })
+        // prevent submit
+        return false;
+    }
+
+    // Show Modal Dialog
+    function ShowModalDialog(title, message) {
+        $('#titleModal').text(title)
+        $('.modal-body').text(message)
+        // trigger Modal
+        $('#userModal').modal('show');
+    }
+
+    // ShowImageThumbnail
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0]
+        let reader = new FileReader()
+        reader.onload = function (e) {
+            $("#thumbnail").attr("src", e.target.result)
+        }
+        reader.readAsDataURL(file);
+    }
+</script>
+</body>
+</html>

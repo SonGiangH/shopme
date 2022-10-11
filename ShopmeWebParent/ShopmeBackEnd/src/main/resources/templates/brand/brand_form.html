@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Shopme Admin</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!-- Jquery -->
+    <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/images/carsales.png}" th:style="'width:100px'"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reports}">Sale Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/articles}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/menus}">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <h1 class="text-primary" >[[${pageTitle}]]</h1>
+        </div>
+        <!-- Form Create New Brand -->
+        <!--              onsubmit="return checkEmailUnique(this)"-->
+        <form th:action="@{/brands/save}" th:object="${brand}" method="post" style="width: 800px; margin:0 auto"
+              onsubmit="return checkBrandUnique(this)"
+              enctype="multipart/form-data" >
+            <!--Hidden ID of user -->
+            <input type="hidden" th:field="*{id}" />
+            <div class="border border-secondary rounded p-4">
+                <!-- Brand Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="nameInput" class="col-form-label">Brand Name</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" id="nameInput" class="form-control" th:field="*{name}" required minlength="4" maxlength="128"/>
+                    </div>
+                </div>
+
+                <!-- Categories Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="categoryInput" class="col-form-label">Select one or more categories :</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select id="categoryInput" th:field="*{categories}" multiple required style="resize: vertical;height: 200px;width: 100%; padding: 2px">
+                            <th:block th:each="cat : ${listCategories}">
+                                <option th:value="${cat.id}">[[${cat.name}]]</option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Logo Upload -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="uploadBrandLogoInput" class="col-form-label">Logo Upload</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="hidden" th:field="*{logo}">
+                        <input type="file" id="uploadBrandLogoInput" name="brandLogo" accept="image/png, image/jpg" class="m-2"/>
+                        <img th:if="${brand.logo != null}" th:src="@{${brand.logoPath}}" class="img-fluid" style="width: 100px" />
+                        <img th:if="${brand.logo == null}" id="thumbnail" th:src="@{/images/default-category.png}" class="img-fluid"/>
+                    </div>
+                </div>
+
+                <!--Chosen Category-->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label class="col-form-label">Chosen categories</label>
+                    </div>
+                    <div class="col-sm-10" id="chosenCategories">
+                        <div th:if="${brand.id != null}">
+                            <th:block th:each="cat : ${brand.categories}">
+                                <span class="badge bg-secondary" th:text="${cat}"></span>
+                            </th:block>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div style="width: 300px; margin:0 auto" class="text-center">
+                    <input type="submit" class="btn btn-primary m-3" value="Save"/>
+                    <input type="button" class="btn btn-secondary" value="Cancel" id="buttonCancel"/>
+                </div>
+            </div>
+        </form>
+        <!--Modal-->
+        <div class="modal fade" id="brandModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        let dropDownCategories = $("#categoryInput");
+        let chosenCategories = $("#chosenCategories");
+
+        dropDownCategories.change(function () {
+            chosenCategories.empty();
+            showChosenCategories();
+        })
+
+        // function show chosen categories
+        function showChosenCategories() {
+            dropDownCategories.children("option:selected").each(function () {
+                let selectedCategory = $(this);
+                let catId = selectedCategory.val();
+
+                // remove "----" by empty string
+                let catName = selectedCategory.text().replace(/-/g,"");
+
+                chosenCategories.append("<span class='badge bg-secondary m-1'>"+catName+"</span>")
+            })
+        }
+
+        // Button cancel
+        $("#buttonCancel").on("click", function (){
+            window.location = "[[@{/brands}]]";
+        })
+
+        // Valid image size for uploading
+        $("#uploadBrandLogoInput").change(function () {
+            let fileSize = this.files[0].size;
+
+            if (fileSize > 1048576) {
+                this.setCustomValidity("You must choose an image less than 1MB !");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("")
+                showImageThumbnail(this);
+            }
+        })
+    });
+
+    // function show Image thumbnail
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0]
+        let reader = new FileReader()
+        reader.onload = function (e) {
+            $("#thumbnail").attr("src", e.target.result)
+        }
+        reader.readAsDataURL(file);
+    }
+
+    // Prevent form submit by returning false
+    function checkBrandUnique(form) {
+        // to RestController
+        let url = "[[@{/brands/check_unique}]]";
+
+        let name = $("#nameInput").val();
+        let brandId = $("#id").val();
+        let params = {id: brandId ,name: name};
+
+        // AJAX call
+        $.post(url, params, function(response) {
+            if (response === "OK") {
+                // form.submit();
+                alert("OK")
+            } else if (response === "DuplicateName") {
+                ShowModalDialog("Warning", name + " is already exist ! Please choose another brand name")
+            } else {
+                ShowModalDialog("Warning", "Unknown response from server !")
+            }
+        }).fail(function () {
+            ShowModalDialog("Error", "Unable connect to server !")
+        })
+
+        // always prevent submit the form
+        return false;
+    }
+
+    // Show Modal Dialog
+    function ShowModalDialog(title, message) {
+        $('#titleModal').text(title)
+        $('.modal-body').text(message)
+        // trigger Modal
+        $('#brandModal').modal('show');
+    }
+</script>
+</body>
+</html>

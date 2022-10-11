@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Shopme Admin</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!--FontAwesome-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+    <!-- Jquery -->
+    <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/images/carsales.png}" th:style="'width:100px'"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reports}">Sale Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/articles}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/menus}">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <h1 class="text-primary" >Manage Users</h1>
+        </div>
+
+        <div class="mb-2">
+            <a th:href="@{/users/new}">Create New User</a>
+        </div>
+        <!-- Message -->
+        <div th:if="${message != null}" class="alert alert-success text-center">
+            [[${message}]]
+        </div>
+        <!-- Table -->
+        <table class="table table-dark table-striped table-responsive-xl table-bordered">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Photo</th>
+                    <th>E-mail</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Roles</th>
+                    <th>Enabled</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user: ${listUsers}">
+                    <td>[[${user.id}]]</td>
+                    <td class="text-center">
+<!--                        <span th:if="${user.photo == '' or user.photo == null}" class="fa-solid fa-user fa-2x"></span>-->
+                        <img  th:src="@{${user.photoImagePath}}" style="width: 100px" />
+                    </td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.firstName}]]</td>
+                    <td>[[${user.lastName}]]</td>
+                    <td>[[${user.roles}]]</td>
+                    <td class="text-center">
+                        <a th:if="${user.enabled == true}" class="fa-solid fa-circle-check text-decoration-none text-success"
+                           th:href="@{'/users/'+${user.id}+'/enable/false'}"></a>
+                        <a th:if="${user.enabled == false}" class="fa-regular fa-circle text-decoration-none text-success"
+                           th:href="@{'/users/'+${user.id}+'/enable/true'}"></a>
+                    </td>
+                    <td class="text-center">
+                        <a th:href="@{'/users/edit/'+ ${user.id}}" title="Edit this user"
+                           class="fa-solid fa-user-pen text-decoration-none text-success"></a>
+                        &nbsp
+                        <a th:href="@{'/users/delete/'+ ${user.id}}" title="Delete this user"
+                           th:userID="${user.id}"
+                           class="fa-regular fa-trash-can text-decoration-none text-success link-delete"></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center m-1" th:if="${totalItems > 0}">
+            <span>Showing user #[[${startCount}]] to [[${endCount}]] of [[${totalItems}]]   </span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalItems > 0}">
+            <span>No users found</span>
+        </div>
+        <!--Pagination Navbar-->
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li th:class="${currentPage > 1 ? 'page-item': 'page-item disabled'}">
+                        <a class="page-link" th:href="@{/users/page/1}" href="#" aria-label="First">
+                            <span aria-hidden="true">First Page</span>
+                        </a>
+                    </li>
+                    <li th:class="${currentPage > 1 ? 'page-item': 'page-item disabled'}">
+                        <a class="page-link" th:href="@{'/users/page/'+ ${currentPage-1}}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" th:href="@{/users/page/1}">1</a></li>
+                    <li class="page-item"><a class="page-link" th:href="@{/users/page/2}">2</a></li>
+                    <li class="page-item"><a class="page-link" th:href="@{/users/page/3}">3</a></li>
+                    <li th:class="${currentPage < totalPage ? 'page-item': 'page-item disabled'}">
+                        <a class="page-link" th:href="@{'/users/page/'+ ${currentPage+1}}" aria-label="Next">
+                            <span aria-hidden="true" >&raquo;</span>
+                        </a>
+                    </li>
+                    <li th:class="${currentPage < totalPage ? 'page-item': 'page-item disabled'}">
+                        <a class="page-link" th:href="@{'/users/page/'+ ${totalPage}}" aria-label="Last">
+                            <span aria-hidden="true">Last Page</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!--Modal-->
+        <div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="confirmationText"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-success" id="yesButton">YES</a>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">NO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $(document).ready(function (){
+        $(".link-delete").on("click", function (e){
+            e.preventDefault()
+
+            let userID = $(this).attr("userID")
+
+            // add text to confirmationText ele
+            $("#confirmationText").text("Confirm to delete user " + userID);
+
+            // add href of Delete button as href of Yes button
+            $("#yesButton").attr("href", $(this).attr("href"));
+
+            // trigger modal
+            $('#modalDelete').modal('show');
+        })
+    })
+</script>
+</body>
+</html>

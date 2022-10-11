@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Shopme Admin</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+    <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!-- Jquery -->
+    <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">
+                    <img th:src="@{/images/carsales.png}" th:style="'width:100px'"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/categories}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/brands}">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/products}">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/customers}">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reports}">Sale Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/articles}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/menus}">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/settings}">Settings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div>
+            <h1 class="text-primary" >[[${pageTitle}]]</h1>
+        </div>
+        <!-- Form Create New User -->
+        <form th:action="@{/users/save}" th:object="${user}" method="post" style="width: 800px; margin:0 auto"
+              onsubmit="return checkEmailUnique(this)"
+              enctype="multipart/form-data">
+            <!--Hidden ID of user -->
+            <input type="hidden" th:field="*{id}" />
+            <div class="border border-secondary rounded p-4">
+                <!-- Email -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="inputEmail" class="col-form-label">Email</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="email" id="inputEmail" class="form-control" th:field="*{email}" required minlength="8" maxlength="128"/>
+                    </div>
+                </div>
+                <!-- Password -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label class="col-form-label" >Password</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <!--if user ID == null -> no exist -> create New -> require Password -->
+                        <input type="password" th:if="${user.id == null}" class="form-control" th:field="*{password}" required minlength="8" maxlength="64"/>
+                        <!--if user ID not null -> exist -> Edit mode -> NO require Password -->
+                        <input type="password" th:if="${user.id != null}" class="form-control" th:field="*{password}" minlength="8" maxlength="64"/>
+                    </div>
+                </div>
+
+                <!-- First Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="inputFirstName" class="col-form-label">First Name</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" id="inputFirstName" class="form-control" th:field="*{firstName}" required minlength="1" maxlength="45"/>
+                    </div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="inputLastName" class="col-form-label">Last Name</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="text" id="inputLastName" class="form-control" th:field="*{lastName}" required minlength="1" maxlength="45"/>
+                    </div>
+                </div>
+
+                <!-- Roles Name -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="inputRole" class="col-form-label">Roles</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <th:block th:each="role: ${listRoles}" th:style="'display: flex; flex-direction: column'">
+                            <div class="d-flex align-items-center">
+                                <input type="checkbox" id="inputRole"
+                                       th:field="*{roles}"
+                                       th:text="${role.name}"
+                                       th:value="${role.id}" class="m-2"/>-<span class="text-secondary">[[${role.description}]]</span>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <!-- Enabled -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="inputEnabled" class="col-form-label">Enabled</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="checkbox" id="inputEnabled" th:field="*{enabled}" class="m-2"/>
+                    </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="row g-3 align-items-center mb-3">
+                    <div class="col-sm-2">
+                        <label for="uploadImageUserInput" class="col-form-label">Avatar Upload</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <input type="hidden" th:field="*{photo}">
+                        <input type="file" id="uploadImageUserInput" name="avatar" accept="image/png, image/jpg" class="m-2"/>
+                        <img th:if="${user.photo != null}" th:src="@{${user.photoImagePath}}" class="img-fluid" style="width: 100px" />
+                        <img th:if="${user.photo == null}" id="thumbnail" th:src="@{/images/default-user.png}" class="img-fluid"/>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div style="width: 300px; margin:0 auto" class="text-center">
+                    <input type="submit" class="btn btn-primary m-3" value="Save"/>
+                    <input type="button" class="btn btn-secondary" value="Cancel" id="buttonCancel"/>
+                </div>
+            </div>
+        </form>
+
+        <!--Modal-->
+        <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Button cancel
+        $("#buttonCancel").on("click", function (){
+            window.location = "[[@{/users}]]";
+        })
+
+        // Valid image size for uploading
+        $("#uploadImageUserInput").change(function () {
+            let fileSize = this.files[0].size;
+
+            if (fileSize > 1048576) {
+                this.setCustomValidity("You must choose an image less than 1MB !");
+                this.reportValidity();
+            } else {
+                this.setCustomValidity("")
+                showImageThumbnail(this);
+            }
+        })
+    });
+
+    // function show Image thumbnail
+    function showImageThumbnail(fileInput) {
+        let file = fileInput.files[0]
+        let reader = new FileReader()
+        reader.onload = function (e) {
+            $("#thumbnail").attr("src", e.target.result)
+        }
+        reader.readAsDataURL(file);
+    }
+
+    // Prevent form submit by returning false
+    function checkEmailUnique(form) {
+        // to RestController
+        let url = "[[@{/users/check_email}]]";
+
+        let userEmail = $("#inputEmail").val();
+        let userId = $("#id").val();
+        let params = {id: userId ,email: userEmail};
+
+        // AJAX call
+        $.post(url, params, function(response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "Duplicated") {
+                ShowModalDialog("Warning", userEmail + " is already exist ! Please choose another email")
+            } else {
+                ShowModalDialog("Warning", "Unknown response from server !")
+            }
+        }).fail(function () {
+            ShowModalDialog("Error", "Unable connect to server !")
+        })
+
+        // always prevent submit the form
+        return false;
+    }
+
+    // Show Modal Dialog
+    function ShowModalDialog(title, message) {
+        $('#titleModal').text(title)
+        $('.modal-body').text(message)
+        // trigger Modal
+        $('#userModal').modal('show');
+    }
+</script>
+</body>
+</html>
