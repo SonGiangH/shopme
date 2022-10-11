@@ -6,6 +6,7 @@ import com.shopme.admin.exception.BrandNotFoundException;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -28,12 +29,19 @@ public class BrandController {
     @Autowired
     public CategoryService categoryService;
 
-    // List all brands
-    @GetMapping("/brands")
-    public String listAllBrands(Model model) {
-        List<Brand> listBrands =  service.getAllBrands();
+    // List all brands using normal way
+//    @GetMapping("/brands")
+//    public String listAllBrands(Model model) {
+//        List<Brand> listBrands =  service.getAllBrands();
+//
+//        model.addAttribute("listBrands", listBrands);
+//        return "brand/brands";
+//    }
 
-        model.addAttribute("listBrands", listBrands);
+    // List first page of brands using Page
+    @GetMapping("/brands")
+    public String listFirstPageBrands(Model model) {
+        listBrandByPage(1, model);
         return "brand/brands";
     }
 
@@ -98,4 +106,32 @@ public class BrandController {
         }
         return "redirect:/brands";
     }
+
+    // Pagination of Brand - List brands by Page
+    @GetMapping("/brands/page/{pageNum}")
+    public String listBrandByPage(@PathVariable(name = "pageNum") Integer pageNum,
+                                  Model model) {
+        Page<Brand> pageBrand = service.getBrandByPage(pageNum-1);
+
+        List<Brand> listBrands = pageBrand.getContent();
+
+        // calculate items in page
+        long totalItems = pageBrand.getTotalElements();
+        long startCount = (long) (pageNum - 1) *service.BRANDS_PER_PAGE + 1;
+        long endCount = startCount + service.BRANDS_PER_PAGE -1;
+        if (endCount > totalItems) {
+            endCount = totalItems;
+        }
+        long totalPage = pageBrand.getTotalPages();
+        // Pass to View page by model
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalItems", totalItems);
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("listBrands", listBrands);
+
+        return "/brand/brands";
+    }
+
 }

@@ -3,6 +3,9 @@ package com.shopme.admin.brand;
 import com.shopme.admin.exception.BrandNotFoundException;
 import com.shopme.common.entity.Brand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,7 +15,7 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 public class BrandService {
-
+    public static final int BRANDS_PER_PAGE = 10;
     @Autowired
     private BrandRepository repo;
 
@@ -60,5 +63,12 @@ public class BrandService {
                 return "DuplicateName";
         }
         return "OK";
+    }
+
+    // List Brands by Page using pagination
+    public Page<Brand> getBrandByPage(int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, BRANDS_PER_PAGE);
+
+        return repo.findAll(pageable);
     }
 }
