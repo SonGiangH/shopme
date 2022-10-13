@@ -6,8 +6,14 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
     <script rel="script" th:src="@{/webjars/bootstrap/js/bootstrap.js}" ></script>
+    <!--FontAwesome-->
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
     <!-- Jquery -->
     <script rel="script" th:src="@{/webjars/jquery/jquery.js}" ></script>
+    <!-- Rich text Jquery css-->
+    <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+    <script rel="script" th:src="@{/richtext/jquery.richtext.min.js}"></script>
+    <script rel="script" th:src="@{/richtext/jquery.richtext.js}"></script>
 </head>
 <body>
     <div class="container-fluid">
@@ -64,7 +70,8 @@
             <h1 class="text-primary" >[[${pageTitle}]]</h1>
         </div>
         <!-- Form Create New Category -->
-        <form th:action="@{/products/save}" th:object="${product}" method="post" style="width: 800px; margin:0 auto"
+        <form th:action="@{/products/save}" th:object="${product}" method="post" style="width: auto; margin:0 auto"
+              onsubmit="return checkUniqueProductName(this)"
               enctype="multipart/form-data">
             <!--Hidden ID of category -->
             <input type="hidden" th:field="*{id}" />
@@ -72,22 +79,26 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" >Overview</button>
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" >Overview</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Description</button>
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Description</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab">Images</button>
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab">Images</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">Details</button>
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">Details</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab">Shipping</button>
                 </li>
             </ul>
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <!-- Overview -->
+                <div class="tab-pane active p-3" id="overview" role="tabpanel">
                     <div class="border border-secondary rounded p-4">
                         <!-- Product Name -->
                         <div class="row g-3 align-items-center mb-3">
@@ -206,122 +217,163 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">2</div>
-                <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">3</div>
-                <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">4</div>
+                <!-- Description -->
+                <div class="tab-pane p-3" id="description" role="tabpanel" >
+                    <div class="m-2">
+                        <label>Short Description: </label>
+                        <textarea th:field="*{shortDescription}" rows="5" required></textarea>
+                    </div>
+                    <div class="m-2">
+                        <label>Full Description: </label>
+                        <textarea th:field="*{fullDescription}" rows="10" required></textarea>
+                    </div>
+                </div>
+                <div class="tab-pane p-3" id="images" role="tabpanel">3</div>
+                <div class="tab-pane p-3" id="details" role="tabpanel">4</div>
+                <div class="tab-pane p-3" id="shipping" role="tabpanel">
+                    <div class="mb-2">
+                        The following information is important to calculate the shipping cost </br>
+                        The dimension (L x W x H) is size of box to package the product - not product dimension
+                    </div>
+                    <!-- Length -->
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-sm-3">
+                            <label class="col-form-label">Length (inch)</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" th:field="*{length}"/>
+                        </div>
+                    </div>
+
+                    <!-- Width -->
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-sm-3">
+                            <label class="col-form-label">Width (inch)</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" th:field="*{width}"/>
+                        </div>
+                    </div>
+
+                    <!-- height -->
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-sm-3">
+                            <label class="col-form-label">Height (inch)</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.01" class="form-control" th:field="*{height}"/>
+                        </div>
+                    </div>
+
+                    <!-- Weight -->
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-sm-3">
+                            <label class="col-form-label">Weight (pounds)</label>
+                        </div>
+                        <div class="col-sm-9">
+                            <input type="number" step="0.5" class="form-control" th:field="*{weight}"/>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div style="width: 300px; margin:0 auto" class="text-center">
+                        <input type="submit" class="btn btn-primary m-3" value="Save"/>
+                        <input type="button" class="btn btn-secondary" value="Cancel" id="buttonShippingCancel"/>
+                    </div>
+                </div>
             </div>
         </form>
 
         <!--Modal-->
-<!--        <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">-->
-<!--            <div class="modal-dialog">-->
-<!--                <div class="modal-content">-->
-<!--                    <div class="modal-header">-->
-<!--                        &lt;!&ndash;Modal Title&ndash;&gt;-->
-<!--                        <h5 class="modal-title text-danger" id="titleModal"></h5>-->
-<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                    </div>-->
-<!--                    <div class="modal-body">-->
-
-<!--                    </div>-->
-<!--                    <div class="modal-footer">-->
-<!--                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 <script type="text/javascript">
     dropDownBrand = $("#brand")
     dropDownCategory = $("#category")
-    brandID = dropDownBrand.val()
-
     moduleURL = "[[@{/products}]]"
     brandURL = "[[@{/brands}]]"
 
     $(document).ready(function () {
-        $("#buttonCancel").on("click", function (){
-            window.location = moduleURL
-        })
-
+        // change selections
         dropDownBrand.change(function () {
-            // before append need to clear the content of dropdown category
+            // before append need to clear the previous content of dropdown category
             dropDownCategory.empty();
             getCategories();
-        })
+        });
+        // button cancel
+        $("#buttonCancel").on("click", function (){
+            window.location = moduleURL;
+        });
 
-        getCategories();
-        // $("#uploadImageCategoryInput").change(function () {
-        //     let fileSize = this.files[0].size;
-        //
-        //     if (fileSize > 1048576) {
-        //         this.setCustomValidity("You must choose an image less than 1MB !");
-        //         this.reportValidity();
-        //     } else {
-        //         this.setCustomValidity("")
-        //         showImageThumbnail(this);
-        //     }
-        // })
+        // button shipping cancel
+        $("buttonShippingCancel").on("click", function () {
+            window.location = moduleURL;
+        });
+
+        // Load rich text area
+        $("#shortDescription").richText();
+        $("#fullDescription").richText();
     });
+    getCategories();
 
     function getCategories() {
+        let brandID = dropDownBrand.val()
         // Rest API : brands/{id}/categories
-        let url = brandURL + "/" + brandID + "/categories"
+        let url = brandURL + "/" + brandID + "/categories";
+
         $.get(url, function (responseJson) {
             $.each(responseJson, function (index, category) {
                 $("<option>").val(category.id).text(category.name).appendTo(dropDownCategory);
             })
-
         })
     }
-    // Check unique of name and alias
-    // function checkUnique(form) {
-    //     // to RestController
-    //     let url = "[[@{/categories/check_unique}]]";
-    //
-    //     let categoryId = $("#id").val();
-    //     let categoryName = $("#name").val();
-    //     let alias = $("#alias").val();
-    //
-    //     let params = {
-    //         id: categoryId ,
-    //         name: categoryName,
-    //         alias : alias
-    //     };
-    //
-    //     // AJAX call
-    //     $.post(url, params, function (response) {
-    //         if (response === "OK") {
-    //             form.submit();
-    //         } else if (response === "DuplicateName") {
-    //             ShowModalDialog("Warning", categoryName + " is already exist ! Please choose another name")
-    //         } else if (response === "DuplicateAlias") {
-    //             ShowModalDialog("Warning", alias + " is already exist ! Please choose another alias")
-    //         } else ShowModalDialog("Warning", "Unknown response from server !");
-    //     }).fail(function () {
-    //         ShowModalDialog("Error", "Unable connect to server !")
-    //     })
-    //     // prevent submit
-    //     return false;
-    // }
-    //
-    // // Show Modal Dialog
-    // function ShowModalDialog(title, message) {
-    //     $('#titleModal').text(title)
-    //     $('.modal-body').text(message)
-    //     // trigger Modal
-    //     $('#userModal').modal('show');
-    // }
-    //
-    // // ShowImageThumbnail
-    // function showImageThumbnail(fileInput) {
-    //     let file = fileInput.files[0]
-    //     let reader = new FileReader()
-    //     reader.onload = function (e) {
-    //         $("#thumbnail").attr("src", e.target.result)
-    //     }
-    //     reader.readAsDataURL(file);
-    // }
+
+    function checkUniqueProductName(form) {
+        let url = "[[@{/products/check_unique}]]";
+        let productId = $("#id").val();
+        let productName = $("#name").val();
+
+        let params = {
+            id: productId ,
+            name: productName,
+        };
+
+        // AJAX call
+        $.post(url, params, function (response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "DuplicateName") {
+                ShowModalDialog("Warning", productName + " is already exist ! Please choose another name")
+            } else ShowModalDialog("Warning", "Unknown response from server !");
+        }).fail(function () {
+            ShowModalDialog("Error", "Unable connect to server !")
+        })
+        // prevent submit
+        return false;
+    }
+
+    // Show Modal Dialog
+    function ShowModalDialog(title, message) {
+        $('#titleModal').text(title)
+        $('.modal-body').text(message)
+        // trigger Modal
+        $('#productModal').modal('show');
+    }
 </script>
 </body>
 </html>

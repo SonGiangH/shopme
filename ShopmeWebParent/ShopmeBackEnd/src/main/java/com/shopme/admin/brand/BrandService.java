@@ -21,7 +21,7 @@ public class BrandService {
 
     // Get all Brands
     public List<Brand> getAllBrands() {
-        return (List<Brand>) repo.findAll();
+        return repo.findAll();
     }
 
     // Save Brand

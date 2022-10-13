@@ -106,11 +106,11 @@
                         <a th:href="@{'/products/detail/' + ${product.id}}"
                            class="fas fa-file-alt text-decoration-none text-success" title="View detail product"></a>
                         &nbsp
-                        <a th:href="@{'/products/edit/'+ ${product.id}}" title="Edit this user"
+                        <a th:href="@{'/products/edit/'+ ${product.id}}" title="Edit this product"
                            class="fa-solid fa-user-pen text-decoration-none text-success"></a>
                         &nbsp
-                        <a th:href="@{'/products/delete/'+ ${product.id}}" title="Delete this user"
-                           th:userID="${product.id}"
+                        <a th:href="@{'/products/delete/'+ ${product.id}}" title="Delete this product"
+                           th:productId="${product.id}"
                            class="fa-regular fa-trash-can text-decoration-none text-success link-delete"></a>
                     </td>
                 </tr>
@@ -152,35 +152,35 @@
 <!--                </ul>-->
 <!--            </nav>-->
 <!--        </div>-->
-<!--        &lt;!&ndash;Modal&ndash;&gt;-->
-<!--        <div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">-->
-<!--            <div class="modal-dialog">-->
-<!--                <div class="modal-content">-->
-<!--                    <div class="modal-header">-->
-<!--                        &lt;!&ndash;Modal Title&ndash;&gt;-->
-<!--                        <h5 class="modal-title text-danger" id="titleModal">Delete Confirmation</h5>-->
-<!--                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--                    </div>-->
-<!--                    <div class="modal-body">-->
-<!--                        <span id="confirmationText"></span>-->
-<!--                    </div>-->
-<!--                    <div class="modal-footer">-->
-<!--                        <a type="button" class="btn btn-success" id="yesButton">YES</a>-->
-<!--                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">NO</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--Modal-->
+        <div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--Modal Title-->
+                        <h5 class="modal-title text-danger" id="titleModal">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <span id="confirmationText"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="button" class="btn btn-success" id="yesButton">YES</a>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">NO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 <script type="text/javascript">
     $(document).ready(function (){
         $(".link-delete").on("click", function (e){
             e.preventDefault()
 
-            let userID = $(this).attr("userID")
+            let productId = $(this).attr("productId")
 
             // add text to confirmationText ele
-            $("#confirmationText").text("Confirm to delete user " + userID);
+            $("#confirmationText").text("Confirm to delete product " + productId);
 
             // add href of Delete button as href of Yes button
             $("#yesButton").attr("href", $(this).attr("href"));
