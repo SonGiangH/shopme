@@ -1,5 +1,6 @@
 package com.shopme.admin;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -45,5 +46,11 @@ public class FileUploadUtil {
         } catch (IOException ex) {
             System.out.println("could not list directory" + dirPath);
         }
+    }
+    // Remove Directory - xoa folder
+    public static void removeDir(String dir) throws IOException {
+        Path dirPath = Paths.get(dir);
+
+        FileUtils.deleteDirectory(new File(String.valueOf(dirPath)));
     }
 }

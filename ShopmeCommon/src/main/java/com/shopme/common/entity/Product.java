@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -46,7 +48,10 @@ public class Product {
     private float height;
     private float weight;
 
-    // Category of product, and Brand of Product
+    @Column(name = "main_image", nullable = false)
+    private String mainImage;
+
+    // Category of product, and Brand of Product, Product images
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -54,6 +59,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Set<ProductImage> images = new HashSet<>();
 
     // Getter and setter
 
@@ -201,6 +209,27 @@ public class Product {
         this.brand = brand;
     }
 
+    public String getMainImage() {
+        return mainImage;
+    }
+
+    public Set<ProductImage> getImages() {
+        return images;
+    }
+
+    public void setImages(Set<ProductImage> images) {
+        this.images = images;
+    }
+
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
+    }
+
+    //function add extra images
+    public void addExtraImages(String imageName) {
+        this.images.add(new ProductImage(imageName, this));
+    }
+
     // toString for JUNIT testing
 
     @Override
@@ -209,5 +238,12 @@ public class Product {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    // Image path of Product
+    @Transient
+    public String getMainImagePath() {
+        if (mainImage == null || id == null) return "/images/default-category.png";
+        return "/product-images/" + id + "/" +mainImage;
     }
 }

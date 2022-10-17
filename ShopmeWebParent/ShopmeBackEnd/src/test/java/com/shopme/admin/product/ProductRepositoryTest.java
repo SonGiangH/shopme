@@ -112,4 +112,19 @@ public class ProductRepositoryTest {
         assertThat(!product.isPresent());
 
     }
+
+    // Test to add Product Image
+    @Test
+    public void uploadProductImage() {
+        Integer id = 3;
+        Product product = repository.findById(id).get();
+
+        product.setMainImage("main-image.png");
+        product.addExtraImages("extra-1.png");
+        product.addExtraImages("extra-2.png");
+        product.addExtraImages("extra-3.png");
+
+        Product savedProduct = repository.save(product);
+        assertThat(savedProduct.getImages().size()).isEqualTo(3);
+    }
 }

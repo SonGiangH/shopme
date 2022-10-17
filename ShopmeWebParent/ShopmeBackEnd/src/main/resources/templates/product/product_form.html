@@ -228,8 +228,40 @@
                         <textarea th:field="*{fullDescription}" rows="10" required></textarea>
                     </div>
                 </div>
-                <div class="tab-pane p-3" id="images" role="tabpanel">3</div>
+                <!-- Upload Main Image -->
+                <div class="tab-pane p-3" id="images" role="tabpanel">
+                    <!-- Image Upload -->
+                    <div class="row g-3 align-items-center mb-3 border" id="uploadContainer">
+                        <!-- Main Image -->
+                        <div class="col border m-3 p-2">
+                            <div class="col-sm-2">
+                                <label for="productMainImage" class="col-form-label">Main Image:</label>
+                            </div>
+                            <div class="col-sm-10">
+                                <input type="hidden" th:field="*{mainImage}">
+                                <div>
+                                    <img th:if="${product.mainImage != null}" th:src="@{${product.mainImagePath}}" class="img-fluid" style="width: 100px" />
+                                    <img th:if="${product.mainImage == null}" id="thumbnail" th:src="@{/images/default-category.png}" class="img-fluid"/>
+                                </div>
+                                <input type="file" id="productMainImage" name="productMainImage" accept="image/png, image/jpg" class="m-2 ms-0"/>
+                            </div>
+                        </div>
+
+                        <!-- Extra Image 1 -->
+                        <div class="col border m-3 p-2" id="divExtraImage0">
+                            <div id="extraImageHeader0">
+                                <label class="col-form-label">Extra Image #1:</label>
+                            </div>
+                            <div>
+                                <img id="extraThumbnail0" th:src="@{/images/default-category.png}" class="img-fluid"/>
+                            </div>
+                            <input type="file" name="extraImage" accept="image/png, image/jpg" class="m-2 ms-0"/>
+                        </div>
+                    </div>
+                </div>
+                <!-- Details -->
                 <div class="tab-pane p-3" id="details" role="tabpanel">4</div>
+                <!-- Shipping -->
                 <div class="tab-pane p-3" id="shipping" role="tabpanel">
                     <div class="mb-2">
                         The following information is important to calculate the shipping cost </br>
@@ -303,77 +335,12 @@
         </div>
     </div>
 <script type="text/javascript">
-    dropDownBrand = $("#brand")
-    dropDownCategory = $("#category")
     moduleURL = "[[@{/products}]]"
     brandURL = "[[@{/brands}]]"
-
-    $(document).ready(function () {
-        // change selections
-        dropDownBrand.change(function () {
-            // before append need to clear the previous content of dropdown category
-            dropDownCategory.empty();
-            getCategories();
-        });
-        // button cancel
-        $("#buttonCancel").on("click", function (){
-            window.location = moduleURL;
-        });
-
-        // button shipping cancel
-        $("buttonShippingCancel").on("click", function () {
-            window.location = moduleURL;
-        });
-
-        // Load rich text area
-        $("#shortDescription").richText();
-        $("#fullDescription").richText();
-    });
-    getCategories();
-
-    function getCategories() {
-        let brandID = dropDownBrand.val()
-        // Rest API : brands/{id}/categories
-        let url = brandURL + "/" + brandID + "/categories";
-
-        $.get(url, function (responseJson) {
-            $.each(responseJson, function (index, category) {
-                $("<option>").val(category.id).text(category.name).appendTo(dropDownCategory);
-            })
-        })
-    }
-
-    function checkUniqueProductName(form) {
-        let url = "[[@{/products/check_unique}]]";
-        let productId = $("#id").val();
-        let productName = $("#name").val();
-
-        let params = {
-            id: productId ,
-            name: productName,
-        };
-
-        // AJAX call
-        $.post(url, params, function (response) {
-            if (response === "OK") {
-                form.submit();
-            } else if (response === "DuplicateName") {
-                ShowModalDialog("Warning", productName + " is already exist ! Please choose another name")
-            } else ShowModalDialog("Warning", "Unknown response from server !");
-        }).fail(function () {
-            ShowModalDialog("Error", "Unable connect to server !")
-        })
-        // prevent submit
-        return false;
-    }
-
-    // Show Modal Dialog
-    function ShowModalDialog(title, message) {
-        $('#titleModal').text(title)
-        $('.modal-body').text(message)
-        // trigger Modal
-        $('#productModal').modal('show');
-    }
+    defaultThumbnailImage = "[[@{/images/default-category.png}]]"
+    var extraImageCount= 0;
+    let url = "[[@{/products/check_unique}]]";
 </script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
 </body>
 </html>

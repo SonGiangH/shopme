@@ -90,8 +90,8 @@
                 <tr th:each="product: ${listProducts}">
                     <td>[[${product.id}]]</td>
                     <td class="text-center">
-<!--                        <span th:if="${user.photo == '' or user.photo == null}" class="fa-solid fa-user fa-2x"></span>-->
-<!--                        <img  th:src="@{${product.photoImagePath}}" style="width: 100px" />-->
+                        <span th:if="${product.mainImage == '' or product.mainImage == null}" class="fa-solid fa-image fa-2x"></span>
+                        <img th:unless="${product.mainImage == '' or product.mainImage == null}" th:src="@{${product.mainImagePath}}" style="width: 100px" />
                     </td>
                     <td>[[${product.name}]]</td>
                     <td>[[${product.brand.name}]]</td>
