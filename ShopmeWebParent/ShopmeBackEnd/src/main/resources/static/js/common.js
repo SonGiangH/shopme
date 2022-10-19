@@ -155,3 +155,41 @@ function removeExtraImage(index) {
     $("#divExtraImage" + index).remove();
 }
 
+// Add Next Detail section
+function addNextDetails() {
+    let allDivDetails = $("[id^='divDetail']")
+    let divDetailCount = allDivDetails.length
+
+    // extra detail index = allDivDetails length
+    let extraDetailElement = `
+                    <div class="d-flex flex-row align-items-center flex-wrap" id="divDetail${divDetailCount}">
+                        <label class="m-3">Name: </label>
+                        <input type="text" class="form-control w-25" name="detailNames" maxlength="255"/>
+                        <label class="m-3">Value: </label>
+                        <input type="text" class="form-control w-25" name="detailValues" maxlength="255"/>
+                    </div>
+    `;
+
+    $("#detailContainer").append(extraDetailElement);
+
+    // Get previous detail section to add the Remove button, set focus
+    let previousDetailElement = allDivDetails.last();
+    previousDetailElement.focus()
+
+    // get id name of detail section
+    let previousDivDetailIdName = previousDetailElement.attr("id")
+
+    // Add remove button to div detail except last one
+    let removeDetailElement = `
+            <a class="btn fa-solid fa-circle-xmark fa-2x float-end" 
+                title="Remove this detail" href="javascript:removeDetailById('${previousDivDetailIdName}')">         
+            </a>
+    `;
+    previousDetailElement.append(removeDetailElement)
+}
+
+function removeDetailById(idName) {
+    $("#" + idName).remove()
+}
+
+

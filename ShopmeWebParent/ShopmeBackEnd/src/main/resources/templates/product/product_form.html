@@ -260,7 +260,18 @@
                     </div>
                 </div>
                 <!-- Details -->
-                <div class="tab-pane p-3" id="details" role="tabpanel">4</div>
+                <div class="tab-pane p-3" id="details" role="tabpanel">
+                    <div id="detailContainer">
+                        <div class="d-flex flex-row align-items-center flex-wrap" id="divDetail0">
+                            <label class="m-3">Name: </label>
+                            <input type="text" class="form-control w-25" name="detailNames" maxlength="255"/>
+                            <label class="m-3">Value: </label>
+                            <input type="text" class="form-control w-25" name="detailValues" maxlength="255"/>
+                        </div>
+                    </div>
+                    <!-- Add more details button -->
+                    <input class="btn btn-secondary" value="Add more details" onclick="addNextDetails()"/>
+                </div>
                 <!-- Shipping -->
                 <div class="tab-pane p-3" id="shipping" role="tabpanel">
                     <div class="mb-2">

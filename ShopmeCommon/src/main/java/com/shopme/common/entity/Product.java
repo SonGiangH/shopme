@@ -3,9 +3,7 @@ package com.shopme.common.entity;
 import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
@@ -63,8 +61,10 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProductImage> images = new HashSet<>();
 
-    // Getter and setter
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductDetail> details = new ArrayList<>();
 
+    // Getter and setter
     public Integer getId() {
         return id;
     }
@@ -228,6 +228,20 @@ public class Product {
     //function add extra images
     public void addExtraImages(String imageName) {
         this.images.add(new ProductImage(imageName, this));
+    }
+
+    // Getter and setter for details
+    public List<ProductDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<ProductDetail> details) {
+        this.details = details;
+    }
+
+    //function add details
+    public void addDetails(String name, String value) {
+        this.details.add(new ProductDetail(name, value,this));
     }
 
     // toString for JUNIT testing
