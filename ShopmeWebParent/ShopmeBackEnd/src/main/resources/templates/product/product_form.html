@@ -75,6 +75,7 @@
               enctype="multipart/form-data">
             <!--Hidden ID of category -->
             <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:if="${product.category != null}" id="categoryId" th:value="${product.category.id}" />
             <!-- Tab panes and Nav -->
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -132,34 +133,28 @@
                                 </select>
                             </div>
                         </div>
-
                         <!-- Category -->
                         <div class="row g-3 align-items-center mb-3">
                             <div class="col-sm-3">
                                 <label class="col-form-label">Product Category</label>
                             </div>
                             <div class="col-sm-9">
-                                <select th:field="*{category}" style="width: 100%">
+                                <!-- edit mode -->
+                                <th:block th:if="${product.category != null}">
+                                    <select th:field="*{category}" style="width: 100%">
+                                        <th:block th:each="cat: ${product.brand.categories}">
+                                            <option th:value="${cat.id}">[[${cat.name}]]</option>
+                                        </th:block>
+                                    </select>
+                                </th:block>
+                                <!-- new mode -->
+                                <th:block th:if="${product.category == null}">
+                                    <select th:field="*{category}" style="width: 100%">
+                                    </select>
+                                </th:block>
 
-                                </select>
                             </div>
                         </div>
-
-                        <!-- Image Upload -->
-                        <!--                <div class="row g-3 align-items-center mb-3">-->
-                        <!--                    <div class="col-sm-3">-->
-                        <!--                        <label for="uploadImageCategoryInput" class="col-form-label">Category Image</label>-->
-                        <!--                    </div>-->
-                        <!--                    <div class="col-sm-9">-->
-                        <!--                        <input type="hidden" th:field="*{image}">-->
-                        <!--                        <input type="file" id="uploadImageCategoryInput" name="categoryImage"-->
-                        <!--                               accept="image/png, image/jpg" class="mt-2 mb-2" th:required="${category.imagePath == null}" />-->
-                        <!--                        <div class="mt-2">-->
-                        <!--                            <img th:src="@{${category.imagePath}}" class="img-fluid" id="thumbnail"/>-->
-                        <!--                        </div>-->
-                        <!--                    </div>-->
-                        <!--                </div>-->
-
                         <!-- Enabled -->
                         <div class="row g-3 align-items-center mb-3">
                             <div class="col-sm-3">
@@ -235,7 +230,7 @@
                         <!-- Main Image -->
                         <div class="col border m-3 p-2">
                             <div class="col-sm-2">
-                                <label for="productMainImage" class="col-form-label">Main Image:</label>
+                                <label for="productMainImage" class="col-form-label" style="width: 200%">Main Image: [[${product.mainImage}]]</label>
                             </div>
                             <div class="col-sm-10">
                                 <input type="hidden" th:field="*{mainImage}">
@@ -243,17 +238,36 @@
                                     <img th:if="${product.mainImage != null}" th:src="@{${product.mainImagePath}}" class="img-fluid" style="width: 100px" />
                                     <img th:if="${product.mainImage == null}" id="thumbnail" th:src="@{/images/default-category.png}" class="img-fluid"/>
                                 </div>
-                                <input type="file" id="productMainImage" name="productMainImage" accept="image/png, image/jpg" class="m-2 ms-0"/>
+                                <input type="file" id="productMainImage" name="productMainImage" accept="image/png, image/jpg"
+                                       th:required="${product.mainImage == null}" class="m-2 ms-0"/>
                             </div>
                         </div>
 
-                        <!-- Extra Image 1 -->
-                        <div class="col border m-3 p-2" id="divExtraImage0">
-                            <div id="extraImageHeader0">
-                                <label class="col-form-label">Extra Image #1:</label>
+                        <!-- Generate extra image for edit mode -->
+                        <th:block th:each="productImage, status : ${product.images}">
+                            <!-- Extra Image -->
+                            <div class="col border m-3 p-2" th:id="'divExtraImage' + ${status.index}">
+                                <div th:id="'extraImageHeader' + ${status.index}">
+                                    <label class="col-form-label">Extra Image #[[${status.index + 1}]]: [[${productImage.name}]]</label>
+                                    <a name="removeExtraImage" class="btn fa-solid fa-circle-xmark fa-2x float-end"
+                                       title="Remove this detail">
+                                    </a>
+                                </div>
+                                <div>
+                                    <img th:id="'extraThumbnail'+ ${status.index}" th:src="@{${productImage.imagePath}}" class="img-fluid"/>
+                                </div>
+                                <input type="file" name="extraImage" accept="image/png, image/jpg" class="m-2 ms-0"/>
+                            </div>
+                        </th:block>
+
+                        <!-- Extra Image for creating new -->
+                        <div class="col border m-3 p-2" th:id="'divExtraImage' + ${totalExtraImages}">
+                            <div th:id="'extraImageHeader' + ${totalExtraImages}">
+                                <label th:if="${totalExtraImages !=null}" class="col-form-label" th:text="'Extra Image #'+ ${totalExtraImages + 1}" ></label>
+                                <label th:if="${totalExtraImages ==null}" class="col-form-label" >Extra Image #1</label>
                             </div>
                             <div>
-                                <img id="extraThumbnail0" th:src="@{/images/default-category.png}" class="img-fluid"/>
+                                <img th:id="'extraThumbnail' + ${totalExtraImages}" th:src="@{/images/default-category.png}" class="img-fluid"/>
                             </div>
                             <input type="file" name="extraImage" accept="image/png, image/jpg" class="m-2 ms-0"/>
                         </div>
@@ -262,7 +276,21 @@
                 <!-- Details -->
                 <div class="tab-pane p-3" id="details" role="tabpanel">
                     <div id="detailContainer">
-                        <div class="d-flex flex-row align-items-center flex-wrap" id="divDetail0">
+                        <!-- Generating details for updating-->
+                        <th:block th:each="detail, status : ${product.details}">
+                            <div class="d-flex flex-row align-items-center flex-wrap" th:id="'divDetail' + ${status.index}">
+                                <label class="m-3">Name: </label>
+                                <input type="text" class="form-control w-25" name="detailNames" maxlength="255" th:value="${detail.name}"/>
+                                <label class="m-3">Value: </label>
+                                <input type="text" class="form-control w-25" name="detailValues" maxlength="255" th:value="${detail.value}"/>
+                                <a name="removeExtraDetail" class="btn fa-solid fa-circle-xmark fa-2x float-end"
+                                   title="Remove this detail">
+                                </a>
+                            </div>
+                        </th:block>
+
+                        <!-- Details section for create new-->
+                        <div class="d-flex flex-row align-items-center flex-wrap" th:id="'divDetail' + ${#lists.size(product.details)}">
                             <label class="m-3">Name: </label>
                             <input type="text" class="form-control w-25" name="detailNames" maxlength="255"/>
                             <label class="m-3">Value: </label>

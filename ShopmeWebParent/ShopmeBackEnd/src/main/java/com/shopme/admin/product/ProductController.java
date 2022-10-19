@@ -2,6 +2,7 @@ package com.shopme.admin.product;
 
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.brand.BrandService;
+import com.shopme.admin.exception.BrandNotFoundException;
 import com.shopme.admin.exception.ProductNotFoundException;
 import com.shopme.common.entity.Brand;
 import com.shopme.common.entity.Product;
@@ -154,5 +155,28 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("message",e.getMessage());
         }
         return "redirect:/products";
+    }
+
+    // Edit Product By Id
+    @GetMapping("/products/edit/{id}")
+    public String editProduct(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes,
+                              Model model) {
+        try {
+            // get product -> add to model
+            Product product = service.getProductById(id);
+            // get brands  -> add to model
+            List<Brand> listBrands = brandService.getAllBrands();
+            // get number of total extra images to push to model
+            Integer numberTotalExtraImages = product.getImages().size();
+
+            model.addAttribute("product", product);
+            model.addAttribute("listBrands",listBrands);
+            model.addAttribute("pageTitle", "Edit Existing Product (ID: " + id + ")");
+            model.addAttribute("totalExtraImages",numberTotalExtraImages);
+            return "/product/product_form";
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return "redirect:/products";
+        }
     }
 }

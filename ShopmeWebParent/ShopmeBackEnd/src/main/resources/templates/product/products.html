@@ -93,7 +93,7 @@
                         <span th:if="${product.mainImage == '' or product.mainImage == null}" class="fa-solid fa-image fa-2x"></span>
                         <img th:unless="${product.mainImage == '' or product.mainImage == null}" th:src="@{${product.mainImagePath}}" style="width: 100px" />
                     </td>
-                    <td>[[${product.name}]]</td>
+                    <td class="w-50">[[${product.name}]]</td>
                     <td>[[${product.brand.name}]]</td>
                     <td>[[${product.category.name}]]</td>
                     <td class="text-center">

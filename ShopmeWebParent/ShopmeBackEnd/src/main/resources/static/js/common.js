@@ -6,7 +6,7 @@ $(document).ready(function () {
     dropDownBrand.change(function () {
         // before append need to clear the previous content of dropdown category
         dropDownCategory.empty();
-        getCategories();
+        getCategoriesForNewForm();
     });
     // button cancel
     $("#buttonCancel").on("click", function (){
@@ -23,7 +23,21 @@ $(document).ready(function () {
     $("#fullDescription").richText();
 
     // load first time to get the category of first item brand
-    getCategories();
+    getCategoriesForNewForm();
+
+    // Remove extra image when editing
+    $("a[name='removeExtraImage']").each(function (index) {
+        $(this).click(function () {
+            removeExtraImage(index);
+        })
+    })
+
+    // Remove extra detail when editing
+    $("a[name='removeExtraDetail']").each(function (index) {
+        $(this).click(function () {
+            removeDetailSectionByIndex(index);
+        })
+    })
 });
 
 // Change thumbnail when upload Main images
@@ -41,6 +55,17 @@ $("input[name='extraImage']").each(function (index) {
         showExtraImageThumbnail(this, index);
     })
 })
+
+function getCategoriesForNewForm() {
+    let categoryId = $("#categoryId")
+    let editMode = false
+
+    // if ton tai Category ID -> set edit mode == true
+    if(categoryId.length) editMode = true
+
+    // edit mode = true -> !edit mode = false -> get all categories
+    if (!editMode) getCategories();
+}
 
 function getCategories() {
     let brandID = dropDownBrand.val()
@@ -182,14 +207,17 @@ function addNextDetails() {
     // Add remove button to div detail except last one
     let removeDetailElement = `
             <a class="btn fa-solid fa-circle-xmark fa-2x float-end" 
-                title="Remove this detail" href="javascript:removeDetailById('${previousDivDetailIdName}')">         
+                title="Remove this detail" href="javascript:removeDetailByIdName('${previousDivDetailIdName}')">         
             </a>
     `;
     previousDetailElement.append(removeDetailElement)
 }
 
-function removeDetailById(idName) {
+function removeDetailByIdName(idName) {
     $("#" + idName).remove()
 }
 
+function removeDetailSectionByIndex(index) {
+    $("#divDetail" + index).remove();
+}
 
