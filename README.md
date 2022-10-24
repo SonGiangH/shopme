@@ -29,7 +29,16 @@ Github page: https://songiangh.github.io/shopme/
 ![user_edit](https://user-images.githubusercontent.com/87811575/197439859-5732a184-beda-417e-8fbe-3b2341363fa9.JPG)
 
 # Category management
+![Cat_new](https://user-images.githubusercontent.com/87811575/197524121-054c249c-4fdc-4596-8aeb-6e3ea9f07c63.JPG)
+![cat](https://user-images.githubusercontent.com/87811575/197524128-cffbecd5-3695-4d15-ba8b-c365bf6085f1.JPG)
+![cat_edit](https://user-images.githubusercontent.com/87811575/197524134-bfe76861-30b3-4c0a-8203-d7f567e74493.JPG)
 
+# Product management
+![product](https://user-images.githubusercontent.com/87811575/197524672-5b2982b8-9a6b-4aaa-8b4d-f4e315bd7f31.JPG)
+![product_new](https://user-images.githubusercontent.com/87811575/197524681-3b99427b-0434-4357-a85a-ebe35e502fe2.JPG)
+![product_image](https://user-images.githubusercontent.com/87811575/197524689-dff73812-4571-4c43-a231-7b7ea4bf1f0b.JPG)
+![product_detail](https://user-images.githubusercontent.com/87811575/197524696-4d6e3e99-4aad-47bf-84fd-793937483161.JPG)
+![product_shipping](https://user-images.githubusercontent.com/87811575/197524700-b25ee816-4408-4af6-869d-e7cc4fc70e54.JPG)
 
 
 # Start
