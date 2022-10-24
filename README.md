@@ -21,8 +21,15 @@ Github page: https://songiangh.github.io/shopme/
 - User Authentications.
 
 # Screenshots, and Preview
-![users](https://user-images.githubusercontent.com/87811575/197439511-aa560dd8-8e98-42d8-8a25-b4fb12f88a25.JPG)
+# Database Structure
 ![shomeDB](https://user-images.githubusercontent.com/87811575/197439623-66541164-0e53-48d9-b9f1-08f7c1c05187.JPG)
+# User management
+![users](https://user-images.githubusercontent.com/87811575/197439511-aa560dd8-8e98-42d8-8a25-b4fb12f88a25.JPG)
+![user_create](https://user-images.githubusercontent.com/87811575/197439760-f9195d20-8faf-4ba2-a2c1-14033b428d14.JPG)
+![user_edit](https://user-images.githubusercontent.com/87811575/197439859-5732a184-beda-417e-8fbe-3b2341363fa9.JPG)
+
+# Category management
+
 
 
 # Start
