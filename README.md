@@ -16,8 +16,9 @@ Github page: https://songiangh.github.io/shopme/
 - Well-designed Admin/detail pages for User, Product, Brand, Category.
 - Detail tabs pane of User, Brand, Product (category and brand) with fully information.
 - Create, Update, Edit and Delete User, Product, Brand and Category with details form.
+- Product managements : Display overview, details (multiple details), shipping, descriptions and uploading multiple images.
 - Working on the search by name, with suggestion keywords, filter result by name
-- Authoriztion of user management for User role.
+- Authoriztion of user management for User role (Admin, Editor, Assistant, Shipper).
 - User Authentications.
 
 # Screenshots, and Preview
